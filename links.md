@@ -1,4 +1,7 @@
-Liens utiles 
+Liens utiles
+
+mindmap:
+https://coggle.it/diagram/WikJ5rEWPgABEgj7
 
 related work :
 https://maps.blueshift.io/air-traffic-globe/?embed=1
