@@ -1,4 +1,3 @@
-Hello World
 <!DOCTYPE html>
 <head>
   <meta charset="utf-8">
@@ -24,7 +23,7 @@ Hello World
 
     var path = d3.geoPath() // d3.geo.path avec d3 version 3
                  .projection(projection);
-    
+
 		d3.json("custom.geo.json", function(json) {
 	    svg.selectAll("path")
            .data(json.features)
