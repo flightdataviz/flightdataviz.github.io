@@ -11,26 +11,34 @@
   <script>
 		var width = 700,
   		  height = 580;
-
 		var svg = d3.select( "body" )
   		.append( "svg" )
 		  .attr( "width", width )
 		  .attr( "height", height );
-
-    var projection = d3.geoConicConformal() //
+    var projection = d3.geoConicConformal() //quelle projection utiliser ???? Pas forcément important
     									.translate([width/2, height/2])
     									.center([15, 50]).scale(800);
-
     var path = d3.geoPath() // d3.geo.path avec d3 version 3
                  .projection(projection);
-
-		d3.json("custom.geo.json", function(json) {
+    var path2 = d3.geoPath()
+									.projection(projection);
+    
+	d3.json("custom.geo.json", function(json) {
 	    svg.selectAll("path")
            .data(json.features)
            .enter()
            .append("path")
-           .attr("d", path);
+           .attr("d", path)
+      		.style("fill",'grey');
 
+		});
+    d3.json("map.geojson", function(json) {
+	    svg.selectAll("path")
+           .data(json.features)
+           .enter()
+           .append("path")
+           .attr("d", path)
+      		.style("fill",'grey');
 		});
   </script>
 </body>
