@@ -17,18 +17,19 @@ d = {}
 dep_ar = ['ARR','DEP']
 for item in list_file:
     d[item]={}
-    for elt in dep_ar: 
-        with open('./departs_arrives/Vols_'+elt+'_'+item+'.csv', 'r') as df:
-            try:
-                next(df)
-            except StopIteration:
-                continue
-            i=8
-            reader = csv.reader(df)
-            d[item][elt]={}
-            for date in dates:
-                d[item][elt][date]={}
+    for elt in dep_ar:
+        d[item][elt]={}
+        i=8
+        for date in dates:
+            d[item][elt][date]={}
+            with open('./departs_arrives/Vols_'+elt+'_'+item+'.csv', 'r') as df:
+                try:
+                    next(df)
+                except StopIteration:
+                    continue
+                reader = csv.reader(df)
                 for row in reader:
+                    print(date)
                     d[item][elt][date][row[0]]=row[i]
                 i-=1
 
