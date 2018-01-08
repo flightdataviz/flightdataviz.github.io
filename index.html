@@ -3,42 +3,267 @@
   <meta charset="utf-8">
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <style>
-    body { margin:0;position:fixed;top:0;right:0;bottom:0;left:0; }
+    body { margin:0;position:relative;top:0;right:0;bottom:0;left:0; }
+    .hidden {
+        display: none;
+    }
+    div.tooltip {
+        color: #222;
+        background-color: #fff;
+        padding: .5em;
+        text-shadow: #f5f5f5 0 1px 0;
+        border-radius: 2px;
+        opacity: 0.9;
+        position: absolute;
+    }
+    
+    
+    .ticks {
+  font: 10px sans-serif;
+    }
+
+    .track,
+    .track-inset,
+    .track-overlay {
+      stroke-linecap: round;
+    }
+
+    .track {
+      stroke: #000;
+      stroke-opacity: 0.3;
+      stroke-width: 4px;
+    }
+
+    .track-inset {
+      stroke: #ddd;
+      stroke-width: 9px;
+    }
+
+    .track-overlay {
+      pointer-events: stroke;
+      stroke-width: 10px;
+      stroke: transparent;
+      cursor: crosshair;
+    }
+
+    .handle {
+      fill: #fff;
+      stroke: #000;
+      stroke-opacity: 0.5;
+      stroke-width:2px;
+    }
+    
+      #mapinter {
+      position: absolute;
+    }
+    
+	
+    .slider {
+      padding-top: 450px;
+      padding-left: 40px
+    }
   </style>
 </head>
 
 <body>
+          <div id="map">
+            <div id="mapinter">
+               <input name="updateButton" 
+                   type="button" 
+                   value="Update" 
+                   onclick="updatedir()" />
+            </div>
+           
+
+        </div>
   <script>
-		var width = 700,
+		var width = 1000,
   		  height = 580;
-		var svg = d3.select( "body" )
+    
+    var zoom = d3.zoom().on("zoom", function () {
+       svg.attr("transform", d3.event.transform)
+     })
+    .scaleExtent([1, 6])
+    
+		var svg = d3.select("#map" )
   		.append( "svg" )
 		  .attr( "width", width )
-		  .attr( "height", height );
-    var projection = d3.geoConicConformal() //quelle projection utiliser ???? Pas forcément important
+		  .attr( "height", height )
+    	.style("background-color","#c7eae5")
+     .call(zoom)
+    .append("g");
+    
+    var slider = d3.select("#mapinter").append("svg") 
+    .attr("class", "slider");
+    
+    
+    var x = d3.scaleLinear()
+    .domain([10, 17])
+    .range([0, 120])
+    .clamp(true);
+    
+    
+    var tooltip = d3.select('body').append('div')
+            .attr('class', 'hidden tooltip');
+    
+    var projection = d3.geoConicConformal() 
     									.translate([width/2, height/2])
-    									.center([15, 50]).scale(800);
+    									.center([-8, 50]).scale(800);
+    
     var path = d3.geoPath() // d3.geo.path avec d3 version 3
                  .projection(projection);
-    var path2 = d3.geoPath()
-									.projection(projection);
+        
+    //creation d'un dico {"code dans data.json" : "indice dans customgeo"}  
+    var noms = {"CZ" : {nom : "Tchéquie",ind : 1},"FI" : {nom : "Finlande",ind : 13},"BE" : {nom : "Belgique",ind : 5},"BG" : {nom : "Bulgarie",ind : 6},"AT" : {nom : "Autriche",ind : 7},"CH" : {nom : "Suisse",ind : 9},"DK" : {nom : "Danemark",ind : 10},"ES" : {nom : "Espagne",ind : 11},"DE" : {nom : "Allemagne",ind : 14},"EE" : {nom : "Estonie",ind : 15},"FR" : {nom : "France",ind : 16},"HR" : {nom : "Croatie",ind : 17},"EL" : {nom : "Grece",ind : 18},"UK" : {nom : "Royaume-uni",ind : 19},"HU" : {nom : "Hongrie",ind : 22},"IE" : {nom : "Irlande",ind : 23},"IS" : {nom : "Islande",ind : 25},"LT" : {nom : "Lituanie",ind : 26},"IT" : {nom : "Italie",ind : 27},"LU" : {nom : "Luxembourg",ind : 31},"LV" : {nom : "Lettonie",ind : 33},"MK" : {nom : "Macédoine",ind : 34},"ME" : {nom : "Monténegro",ind : 35},"MT" : {nom : "Malte",ind : 36},"PT" : {nom : "Portugal",ind : 37},"NO" : {nom : "Norvège",ind : 38},"NL" : {nom : "Pays-bas",ind : 39},"PL" : {nom : "Pologne",ind : 40},"RO" : {nom : "Roumanie",ind : 41},"SK" : {nom : "Slovaquie",ind : 45},"SI" : {nom : "Slovénie",ind : 46},"SE" : {nom : "Suède",ind : 48}}
     
-	d3.json("custom.geo.json", function(json) {
-	    svg.selectAll("path")
-           .data(json.features)
-           .enter()
-           .append("path")
-           .attr("d", path)
-      		.style("fill",'grey');
+    
+    
+    
+    			//console.log(europe.features[noms.AT.ind].properties.name)
+    
+    var color = d3.scaleQuantize()
+    	.range(['#f7fcf0','#e0f3db','#ccebc5','#a8ddb5','#7bccc4','#4eb3d3','#2b8cbe','#0868ac','#084081'])
+    
+    //creation d'une var max qui stocke le max des differentes années dans les 2 sens
+     var max={"2010" : {"DEP" : 0, "ARR" : 0 },"2011" : {"DEP" :0 , "ARR" :0 },"2012" : {"DEP" :0 , "ARR" :0 },"2013" : {"DEP" :0 , "ARR" :0 },"2014" : {"DEP" : 0, "ARR" :0 },"2015" : {"DEP" :0 , "ARR" : 0},"2016" : {"DEP" : 0, "ARR" : 0},"2017" : {"DEP" : 0, "ARR" : 0}}          
+    
+    var currentyear = 2010
+    var currentdir = "DEP";
+    
+    d3.json("data.json",function(json){
+                  
+     
+                  // SI OPERATIONS PREALABLES A FAIRE GRACE A UN PASSAGE SUR LES DONNEES
+                  // (autant) LE FAIRE ICI :
+                  
+                  Object.keys(json).forEach(function(d){
+                  //on récupère les max des départs et ARRivées pour chaque année :
+                    for(var i = 2010;i<=2017;i++){
+                      max[i].DEP=d3.max([max[i].DEP,parseInt(json[d].DEP[i].Total)])
+                      max[i].ARR=d3.max([max[i].ARR,parseInt(json[d].ARR[i].Total)])
+                    }
+                  })
+                  
+                  color.domain([0,1]);
+                  
+                  	d3.json("custom.geo.json", function(europe) {
+                        svg.selectAll("path")
+                             .data(europe.features)
+                             .enter()
+                             .append("path")
+                             .attr("d", path)
+                            .style("fill",'lightgrey');
+                      //On donne un identifiant à chaque feature qu'on retrouve dans noms :
+                      	for(var i = 0;i<europe.features.length;i++){
+                          europe.features[i].ident=i
+                        }
+                      
+                      	svg.selectAll("path")
+                        		.style("fill",function(d) {var value
+                                  Object.keys(noms).forEach(function(e){
+                                   		 if(noms[e].ind==d.ident){
+                                         value = json[e][currentdir][currentyear].Total/max[currentyear][currentdir]
+                                       }
+                                   })
+                                if (value) {
+                                  return color(value);
+                                  } else {
+                                  return 'lightgrey';
+                                  }})
+                            .on('mousemove',function(d){
+                                var mouse = d3.mouse(svg.node())
+                                              .map(function(d) {
+                                                  return parseInt(d);
+                                              });
+                                 tooltip.classed('hidden', false)
+                                        .attr('style', 'left:' + (mouse[0] + 15) +
+                                                  'px; top:' + (mouse[1] - 35) + 'px')
+                                        .html(d.properties.sovereignt+ "<br>" );
+
+                              })//appelle le tooltip sur mvt de la souris
+                            .on('mouseout', function() {
+                                  tooltip.classed('hidden', true);
+                              });
+                      
+                      //ON MET LE SLIDER ICI POUR L'INSTANT (?)
+                      //AFIN QU'IL PUISSE APPELER LES DONNEES DANS LE JASON
+                      //IL Y A SUREMENT MIEUX A FAIRE
+                      
+                      
+                      
+
+
+                          slider.append("line")
+                            .attr("class", "track")
+                            .attr("x1", x.range()[0])
+                            .attr("x2", x.range()[1])
+                            .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+                            .attr("class", "track-inset")
+                          	.select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+                            .attr("class", "track-overlay")
+                            .call(d3.drag()
+                                .on("start.interrupt", function() { slider.interrupt(); })
+                                .on("start drag", function() { hue(Math.round(x.invert(d3.event.x))); })
+                                 );
+                      
+                      
+                      		slider.insert("g", ".track-overlay")
+                            .attr("class", "ticks")
+                            .attr("transform", "translate(0," + 14 + ")")
+                            .selectAll("text")
+                            .data(x.ticks(5))
+                            .enter().append("text")
+                            .attr("x", x)
+                            .attr("text-anchor", "middle")
+                            .text(function(d) { return d; });
+
+                       var handle = slider.insert("circle", ".track-overlay")
+                            .attr("class", "handle")
+                            .attr("r", 6);
+
+                      
+                      function hue(h) { 
+                        handle.attr("cx", x(h));
+                        updateyear(h);
+                      }//Update la position sur le slider et appelle d'autres updates
+                      
+                      function updateyear(h){
+                        currentyear = 2000+h
+                        update()
+                      }
+                      function updatedir(){
+                    if(currentdir == "DEP"){
+                      currentdir = "ARR"
+                    }else{
+                      currentdir = "DEP"
+                    }
+                        update()
+                      }
+                      function update(){
+                        svg.selectAll("path").style("fill",function(d) {var value
+                                  Object.keys(noms).forEach(function(e){
+                                   		 if(noms[e].ind==d.ident){
+                                         value = json[e][currentdir][currentyear].Total/max[currentyear][currentdir]
+                                       }
+                                  })
+                                if (value) {
+                                  return color(value);
+                                  } else {
+                                  return 'lightgrey';
+                                  }
+                                                                       });
+                      }//Update la couleur des pays. Est appelée par le slider(via hue)
+                      
+                  
+                    
+                  
+          });
+    
+    
 
 		});
-    d3.json("map.geojson", function(json) {
-	    svg.selectAll("path")
-           .data(json.features)
-           .enter()
-           .append("path")
-           .attr("d", path)
-      		.style("fill",'grey');
-		});
+     
+    
+   
   </script>
 </body>
