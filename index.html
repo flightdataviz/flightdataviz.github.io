@@ -60,32 +60,105 @@
 	
     .slider {
       padding-top: 450px;
-      padding-left: 40px
+      padding-left: 40px;
+      width : 100%
     }
+    
+    .pays {
+      stroke : #040801;
+      stroke-width : 0.06px;
+    }
+    
+    .paysselect {
+      stroke : #ffffff;
+      stroke-width : 2.2px;
+    }
+    
+    .centres {
+      fill: #7aff92;
+      stroke: #91d94e;
+      :6;
+      opacity: 0.8;
+      stroke-width: 0.5px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+    
+    #update{
+      position : absolute;
+      padding-top: 350px;
+      padding-left: 30px
+    }
+
+
+
+  /* global btn styles */
+  .btn {
+    display: inline-block;
+    font-size: 90%;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background ease .3s;
+  }
+
+  /* buy btn */
+  .btn-departure {
+    background: #27AE60;
+    font-weight: bold;
+    color: #fff;
+    padding: 12px;
+        /*  border: 3px solid #4CAF50; */
+  }
+
+  .btn-departure:hover {
+    background: #2ECC71;
+    
+  }
+
+  /* sign in btn */
+  .btn-arrival {
+    padding: 8px;
+    background: #2980B9;
+    color: #fff;
+    font-weight: bold;
+  }
+
+  .btn-arrival:hover {
+    background: #3498DB;
+}
   </style>
 </head>
 
 <body>
           <div id="map">
-            <div id="mapinter">
-               <input name="updateButton" 
-                   type="button" 
-                   value="Update" 
-                   onclick="updatedir()" />
+            
+           <div id="mapinter">
             </div>
-           
+            
+            <div id="update">
+              <a id="departure" class="btn btn-departure">Departure</a>
+							<a id="arrival" class="btn btn-arrival">Arrival</a>
+            </div>
 
         </div>
+
   <script>
 		var width = 1000,
   		  height = 580;
     
+    d3.select('div#mapinter')
+    .style('width',"130px")
+    .style('height',"400px")
+    
     var zoom = d3.zoom().on("zoom", function () {
        svg.attr("transform", d3.event.transform)
      })
-    .scaleExtent([1, 6])
+    .scaleExtent([1, 6]);
+    //on fixe le zoom (et sa fonction translate) de manière à ne pas pouvoir déplacer la carte n'importe comment (ou hors de sa position d'origine)
+    zoom.translateExtent([[0,0],[width,height]])
     
-		var svg = d3.select("#map" )
+		var svg = d3.select("#map" ) 
   		.append( "svg" )
 		  .attr( "width", width )
 		  .attr( "height", height )
@@ -114,11 +187,19 @@
                  .projection(projection);
         
     //creation d'un dico {"code dans data.json" : "indice dans customgeo"}  
-    var noms = {"CZ" : {nom : "Tchéquie",ind : 1},"FI" : {nom : "Finlande",ind : 13},"BE" : {nom : "Belgique",ind : 5},"BG" : {nom : "Bulgarie",ind : 6},"AT" : {nom : "Autriche",ind : 7},"CH" : {nom : "Suisse",ind : 9},"DK" : {nom : "Danemark",ind : 10},"ES" : {nom : "Espagne",ind : 11},"DE" : {nom : "Allemagne",ind : 14},"EE" : {nom : "Estonie",ind : 15},"FR" : {nom : "France",ind : 16},"HR" : {nom : "Croatie",ind : 17},"EL" : {nom : "Grece",ind : 18},"UK" : {nom : "Royaume-uni",ind : 19},"HU" : {nom : "Hongrie",ind : 22},"IE" : {nom : "Irlande",ind : 23},"IS" : {nom : "Islande",ind : 25},"LT" : {nom : "Lituanie",ind : 26},"IT" : {nom : "Italie",ind : 27},"LU" : {nom : "Luxembourg",ind : 31},"LV" : {nom : "Lettonie",ind : 33},"MK" : {nom : "Macédoine",ind : 34},"ME" : {nom : "Monténegro",ind : 35},"MT" : {nom : "Malte",ind : 36},"PT" : {nom : "Portugal",ind : 37},"NO" : {nom : "Norvège",ind : 38},"NL" : {nom : "Pays-bas",ind : 39},"PL" : {nom : "Pologne",ind : 40},"RO" : {nom : "Roumanie",ind : 41},"SK" : {nom : "Slovaquie",ind : 45},"SI" : {nom : "Slovénie",ind : 46},"SE" : {nom : "Suède",ind : 48}}
+    var noms = {"CZ" : {nom : "Tchéquie",ind : 1},"FI" : {nom : "Finlande",ind : 13},"BE" : {nom : "Belgique",ind : 5},"BG" : {nom : "Bulgarie",ind : 6},"AT" : {nom : "Autriche",ind : 7},"CH" : {nom : "Suisse",ind : 9},"DK" : {nom : "Danemark",ind : 10},"ES" : {nom : "Espagne",ind : 11},"DE" : {nom : "Allemagne",ind : 14},"EE" : {nom : "Estonie",ind : 15},"FR" : {nom : "France",ind : 16},"HR" : {nom : "Croatie",ind : 17},"EL" : {nom : "Grece",ind : 18},"UK" : {nom : "Royaume-uni",ind : 19},"HU" : {nom : "Hongrie",ind : 22},"IE" : {nom : "Irlande",ind : 23},"IS" : {nom : "Islande",ind : 25},"LT" : {nom : "Lituanie",ind : 26},"IT" : {nom : "Italie",ind : 27},"LU" : {nom : "Luxembourg",ind : 31},"LV" : {nom : "Lettonie",ind : 33},"MK" : {nom : "Macédoine",ind : 34},"ME" : {nom : "Monténegro",ind : 35},"MT" : {nom : "Malte",ind : 36},"PT" : {nom : "Portugal",ind : 37},"NO" : {nom : "Norvège",ind : 38},"NL" : {nom : "Pays-bas",ind : 39},"PL" : {nom : "Pologne",ind : 40},"RO" : {nom : "Roumanie",ind : 41},"SK" : {nom : "Slovaquie",ind : 45},"SI" : {nom : "Slovénie",ind : 46},"SE" : {nom : "Suède",ind : 48},"TR" : {nom : "Turquie",ind : 50}}
     
-    
-    
-    
+    function recupcode(indice){ //dans la var noms retrouve le code en fonction de l'indice
+     var value; 
+      Object.keys(noms).forEach(function(e){
+                                   		 if(noms[e].ind==indice){
+                                         value = e;
+                                       }
+      })
+                                          if(value){return value}else{return "NA"};
+                               };//QUAND PAYS NON INDEXE on affichera NO DATA
+    //console.log(recupcode(50))
+     
     			//console.log(europe.features[noms.AT.ind].properties.name)
     
     var color = d3.scaleQuantize()
@@ -126,10 +207,13 @@
     
     //creation d'une var max qui stocke le max des differentes années dans les 2 sens
      var max={"2010" : {"DEP" : 0, "ARR" : 0 },"2011" : {"DEP" :0 , "ARR" :0 },"2012" : {"DEP" :0 , "ARR" :0 },"2013" : {"DEP" :0 , "ARR" :0 },"2014" : {"DEP" : 0, "ARR" :0 },"2015" : {"DEP" :0 , "ARR" : 0},"2016" : {"DEP" : 0, "ARR" : 0},"2017" : {"DEP" : 0, "ARR" : 0}}          
+     var dir={"DEP" : "Departures","ARR": "Arrivals"}
     
+     
     var currentyear = 2010
     var currentdir = "DEP";
-    
+    //console.log(dir[currentdir])
+    d3.json("centres.json",function(centres){
     d3.json("data.json",function(json){
                   
      
@@ -157,8 +241,8 @@
                       	for(var i = 0;i<europe.features.length;i++){
                           europe.features[i].ident=i
                         }
-                      
                       	svg.selectAll("path")
+                        		.attr("class","pays")
                         		.style("fill",function(d) {var value
                                   Object.keys(noms).forEach(function(e){
                                    		 if(noms[e].ind==d.ident){
@@ -174,30 +258,46 @@
                                 var mouse = d3.mouse(svg.node())
                                               .map(function(d) {
                                                   return parseInt(d);
-                                              });
-                                 tooltip.classed('hidden', false)
+                                              		});
+                          //console.log(json[recupcode(d.ident)])
+                          //modifions l'apparence des pays sur lesquels on passe :
+                          				d3.select(this).attr("class","paysselect");
+                          //on affiche le tooltip :
+                                 tooltip.classed('hidden', false) 
                                         .attr('style', 'left:' + (mouse[0] + 15) +
-                                                  'px; top:' + (mouse[1] - 35) + 'px')
-                                        .html(d.properties.sovereignt+ "<br>" );
+                                                  'px; top:' + (mouse[1] - 35) + 'px');
+                          
+                          
+                          if(recupcode(d.ident)=="NA"){
+                            tooltip.html(d.properties.sovereignt+ "<br>" +"No Data");
+                          }else{tooltip.html(d.properties.sovereignt+ "<br>" +dir[currentdir]+" in "+currentyear+" : "+Intl.NumberFormat().format(json[recupcode(d.ident)][currentdir][currentyear].Total));
 
-                              })//appelle le tooltip sur mvt de la souris
+                              }})//gere la selection lors du mvt de la souris
                             .on('mouseout', function() {
+                          d3.select(this).attr("class","pays")
                                   tooltip.classed('hidden', true);
                               });
+                      
+                          svg.append("g")
+        										 .attr("class", "centres")
+     										    .selectAll("path")
+         										.data(centres.features)
+       										  .enter()
+                             .append("path")
+                             .attr("d", path);
+                     
                       
                       //ON MET LE SLIDER ICI POUR L'INSTANT (?)
                       //AFIN QU'IL PUISSE APPELER LES DONNEES DANS LE JASON
                       //IL Y A SUREMENT MIEUX A FAIRE
-                      
-                      
-                      
-
-
+                                          
                           slider.append("line")
                             .attr("class", "track")
                             .attr("x1", x.range()[0])
                             .attr("x2", x.range()[1])
-                            .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+                            .attr('y1',10)
+                            .attr('y2',10)
+                            .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); }) 
                             .attr("class", "track-inset")
                           	.select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
                             .attr("class", "track-overlay")
@@ -209,7 +309,7 @@
                       
                       		slider.insert("g", ".track-overlay")
                             .attr("class", "ticks")
-                            .attr("transform", "translate(0," + 14 + ")")
+                            .attr("transform", "translate(0," + 26 + ")")
                             .selectAll("text")
                             .data(x.ticks(5))
                             .enter().append("text")
@@ -219,6 +319,7 @@
 
                        var handle = slider.insert("circle", ".track-overlay")
                             .attr("class", "handle")
+                      		  .attr("cy",10)
                             .attr("r", 6);
 
                       
@@ -231,14 +332,28 @@
                         currentyear = 2000+h
                         update()
                       }
-                      function updatedir(){
-                    if(currentdir == "DEP"){
-                      currentdir = "ARR"
-                    }else{
+                      
+                      document.getElementById("departure").onclick = function updatedir(){
+                    if(currentdir == "ARR"){
                       currentdir = "DEP"
+                        document.getElementById("departure").setAttribute("style","padding: 12px")
+                                            		  document.getElementById("arrival").setAttribute("style","padding: 8px")
+
+                    }else{
                     }
                         update()
                       }
+                      
+        	      document.getElementById("arrival").onclick = function updatedir(){
+                    if(currentdir == "DEP"){
+                      currentdir = "ARR"
+                                            document.getElementById("departure").setAttribute("style","padding: 8px")
+                                            		  document.getElementById("arrival").setAttribute("style","padding: 12px")
+                    }else{
+                    }
+                        update()
+                      }
+                      
                       function update(){
                         svg.selectAll("path").style("fill",function(d) {var value
                                   Object.keys(noms).forEach(function(e){
@@ -252,6 +367,16 @@
                                   return 'lightgrey';
                                   }
                                                                        });
+                        //on update les centres aussi
+                        //SUPPRIMER CEUX DES PAYS NON REPRESENTES ?
+                          svg.append("g")
+        										 .attr("class", "centres")
+     										    .selectAll("path")
+         										.data(centres.features)
+       										  .enter()
+                             .append("path")
+                             .attr("id", function(d) {return d.id;})
+                             .attr("d", path);
                       }//Update la couleur des pays. Est appelée par le slider(via hue)
                       
                   
@@ -262,6 +387,8 @@
     
 
 		});
+      
+    })
      
     
    
