@@ -67,7 +67,12 @@
     },
     {
       "type": "Feature",
-      "properties": {},
+      "properties": {
+        "marker-color": "#7e7e7e",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "nom": "BE"
+      },
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -489,6 +494,22 @@
         "coordinates": [
           14.5404052734375,
           46.08085173686784
+        ]
+      }
+    },
+	{
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7e7e7e",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "nom": "TR"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          33.22265625,
+          39.33429742980725
         ]
       }
     },
