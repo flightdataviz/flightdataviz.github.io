@@ -147,7 +147,7 @@
   </style>
 </head>
 
-<body>
+<body> 
           <div id="map">
             
             <div id="mapinter2">
@@ -163,8 +163,8 @@
         </div>
 
   <script> 
-		var width = 2000,
-  		  height = 1000;
+		var width = 1200,
+  		  height = 680;
     
     d3.select('div#mapinter')
     .style('width',"130px")
@@ -342,10 +342,6 @@
                           else{
                             if(selectcountry == codefromInd(d.ident)){selectcountry =[]
                             update()}
-                            else{update();
-                                selectcountry = codefromInd(d.ident)
-                                 flyroutes(selectcountry)
-                                }
                           }
                             	//if(codefromInd(d.ident)){flyroutes(codefromInd(d.ident));}
                             });
