@@ -21,26 +21,31 @@
     .ticks {
   		font: 10px sans-serif;
     }
+
     .track,
     .track-inset,
     .track-overlay {
       stroke-linecap: round;
     }
+
     .track {
       stroke: #000;
       stroke-opacity: 0.3;
       stroke-width: 4px;
     }
+
     .track-inset {
       stroke: #ddd;
       stroke-width: 9px;
     }
+
     .track-overlay {
       pointer-events: stroke;
       stroke-width: 10px;
       stroke: transparent;
       cursor: crosshair;
     }
+
     .handle {
       fill: #fff;
       stroke: #000;
@@ -102,6 +107,9 @@
       padding-top: 350px;
       padding-left: 30px
     }
+
+
+
   /* global btn styles */
   .btn {
     display: inline-block;
@@ -110,6 +118,7 @@
     border-radius: 5px;
     transition: background ease .3s;
   }
+
   /* buy btn */
   .btn-departure {
     background: #27AE60;
@@ -118,10 +127,12 @@
     padding: 12px;
         /*  border: 3px solid #4CAF50; */
   }
+
   .btn-departure:hover {
     background: #2ECC71;
     
   }
+
   /* sign in btn */
   .btn-arrival {
     padding: 8px;
@@ -129,6 +140,7 @@
     color: #fff;
     font-weight: bold;
   }
+
   .btn-arrival:hover {
     background: #3498DB;
 }
@@ -205,6 +217,7 @@
                  .projection(projection);
     
     
+
     
     
     //creation d'un dico {"code dans data.json" : "indice dans customgeo"}  
@@ -315,6 +328,7 @@
                           if(recupcode(d.ident)=="NA"){
                             tooltip.html(d.properties.sovereignt+ "<br>" +"No Data");
                           }else{tooltip.html(d.properties.sovereignt+ "<br>" +dir[currentdir]+" in "+currentyear+" : "+Intl.NumberFormat().format(json[recupcode(d.ident)][currentdir][currentyear].Total));
+
                               }})//gere la selection lors du mvt de la souris
                             .on('mouseout', function() {
                           d3.select(this).attr("class","pays")
@@ -423,29 +437,38 @@
                       return function(i) {
                         return function(t) {
                           var p = path.getPointAtLength(t * l);
+
                           var t2 = Math.min(t + 0.05, 1);
                           var p2 = path.getPointAtLength(t2 * l);
+
                           var x = p2.x - p.x;
                           var y = p2.y - p.y;
                           var r = 90 - Math.atan2(-y, x) * 180 / Math.PI;
+
                           var s = Math.min(Math.sin(Math.PI * t) * 0.1, 0.2);
+
                           return "translate(" + p.x + "," + p.y + ") scale(" + s/(3-8*taille) + ") rotate(" + r + ")";
                         }
                       }
   									}
     
+
                       function fly(origin, destination,vit) {
                         var route = svg.append("path")
                                        .datum({type: "LineString", coordinates: [centresmap(origin), centresmap(destination)]})
                                        .attr("class", "route")
                                        .attr("d", path);
+
                         var plane = svg.append("path")
                         								.attr("id","pls")
                                        .attr("class", "plane")
                                        .attr("d","m305.14451,50.04889c-2.99458,0 -5.65882,1.35021 -7.90675,3.7994c-2.24603,2.44716 -4.10382,5.95374 -5.64975,10.33309c-3.09144,8.75746 -4.9931,21.05971 -6.03331,35.7928c-1.03815,14.70473 -1.71301,31.82705 -1.2817,50.15615c-36.99032,16.66795 -104.0165,50.11541 -117.54035,58.76691c-13.52385,8.65151 -47.43095,34.32414 -11.69779,26.58068l132.8358,-24.41467c2.60704,35.93186 6.31389,71.52048 9.5441,99.40688c-12.06151,3.87732 -34.57643,11.53321 -39.2238,16.28073c-6.40212,6.54011 -18.31853,30.81921 -6.40208,27.66124l50.47911,-4.50953c1.18889,9.10425 1.93241,14.41653 1.93241,14.41653l0.07376,0.47937l0.3983,0l0.92931,0l0.39829,0l0.07376,-0.47937c0,0 0.74211,-5.31237 1.93241,-14.41653l50.49386,4.50953c11.3748,3.15797 0.00006,-21.12113 -6.4021,-27.66124c-4.6491,-4.74937 -27.18045,-12.42261 -39.23854,-16.29859c3.22354,-27.80083 6.92383,-63.25327 9.52935,-99.06937c40.63013,9.08433 69.65703,11.35118 121.89039,27.25298c52.23336,15.9018 13.84068,-19.50813 -2.18319,-29.73865c-16.02387,-10.23052 -78.16262,-41.23842 -115.60946,-58.12781c0.44742,-18.56667 -0.71696,-35.92232 -1.76699,-50.79525l0,-0.03551c-1.04073,-14.71684 -2.94442,-27.00711 -6.03327,-35.75729c-1.54549,-4.37814 -3.38817,-7.88508 -5.63501,-10.3331c-2.24794,-2.44918 -4.91216,-4.04938 -7.90671,-3.79939l-0.00005,0.25z")
                         .attr("transform","scale(3)");
+
                       transition(plane, route,vit);
                     }
+
+
 									var interval
 							function flyroutes(pays){
                                  activesetI=true
@@ -521,6 +544,7 @@
                             .attr("x", y)
                             .attr("text-anchor", "middle")
                             .text(function(d) { return d; });
+
                        var handle2 = slider2.insert("circle", ".track-overlay")
                             .attr("class", "handle")
                       		  .attr("cy",10)
@@ -560,6 +584,7 @@
                             .attr("x", x)
                             .attr("text-anchor", "middle")
                             .text(function(d) { return d; });
+
                        var handle = slider.insert("circle", ".track-overlay")
                             .attr("class", "handle")
                       		  .attr("cy",10)
@@ -588,6 +613,7 @@
                       currentdir = "DEP"
                         document.getElementById("departure").setAttribute("style","padding: 12px")
                                             		  document.getElementById("arrival").setAttribute("style","padding: 8px")
+
                     }else{
                     }
                         update()
