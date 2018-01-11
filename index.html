@@ -251,6 +251,7 @@
     var currentdir = "DEP";
     var selectcountry=[];
     console.log(typeof(selectcountry)=='object')
+    var activesetI = false;
     var arret=false;
     var dataroutes
     pourcentage = 0.5
@@ -336,7 +337,8 @@
                         .on('click',function(d){
                           console.log(typeof(selectcountry)=='object')
                           if(typeof(selectcountry)=='object'){selectcountry = codefromInd(d.ident);
-                                            flyroutes(selectcountry)}
+                                            flyroutes(selectcountry);
+                                                             }
                           else{
                             if(selectcountry == codefromInd(d.ident)){selectcountry =[]
                             update()}
@@ -406,7 +408,7 @@
                       }//retrouve l'indice à chercher dans centres pour tel pays IMPORTANT
       
                       function centresmap(pays){
-                        return centres.features[indicedanscentres(pays)].geometry.coordinates;
+                        return  centres.features[indicedanscentres(pays)].geometry.coordinates;
                       }//renvoie les coord d'un pays IMPORTANT
                       
                       
@@ -473,6 +475,7 @@
 
 									var interval
 							function flyroutes(pays){
+                                 activesetI=true
                 var liste=getroutes(pays,pourcentage)
                 console.log(liste)
 									var t=0; 
@@ -642,7 +645,8 @@
                       }
                    
                       function update(){
-                        arret = true;
+                        if(activesetI){arret = true;
+                                      activesetI = false}
                         dataroutes = []
                         selectcountry = []
                         svg.selectAll("path#pls.plane").remove()
