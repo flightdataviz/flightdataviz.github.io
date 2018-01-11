@@ -59,14 +59,14 @@
     
 	
     .slider {
-      padding-top: 400px;
-      padding-left: 40px;
+      padding-top: 700px;
+      padding-left: 50px;
       height : 12%;
       width : 100%
     }
     .slider2 {
-      padding-top: 0px;
-      padding-left: 40px;
+      padding-top: 300px;
+      padding-left: 20px;
     }
     
     .pays {
@@ -104,8 +104,8 @@
     }
     #update{
       position : absolute;
-      padding-top: 350px;
-      padding-left: 30px
+      padding-top: 800px;
+      padding-left: 50px
     }
 
 
@@ -151,6 +151,7 @@
           <div id="map">
             
             <div id="mapinter2">
+              
             </div>
            <div id="mapinter">
             </div>
@@ -211,7 +212,7 @@
     
     var projection = d3.geoConicConformal() 
     									.translate([width/2, height/2])
-    									.center([-8, 50]).scale(745);
+    									.center([5, 52]).scale(1500);
     
     var path = d3.geoPath() // d3.geo.path avec d3 version 3
                  .projection(projection);
